@@ -4,6 +4,7 @@
 #include "wmePipeline.hpp"
 #include "wmeSwapChain.hpp"
 #include "wmeWindow.hpp"
+#include "wmeModel.hpp"
 
 #include <memory>
 #include <vector>
@@ -19,21 +20,26 @@ namespace wme
 		App();
 		~App();
 		App(const App&) = delete;
-		void operator = (const App&) = delete;
+		App& operator= (const App&) = delete;
 
 		void run();
 
 	private:
+		void loadModels();
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
+		void freeCommandBuffers();
 		void drawFrame();
+		void recreateSwapChain();
+		void recordCommandBuffer(int imageIndex);
 
 		WmeWindow wmeWindow{ WIDTH, HEIGHT, "Test Vulkan" };
 		WmeDevice wmeDevice{ wmeWindow };
-		WmeSwapChain wmeSwapChain{ wmeDevice, wmeWindow.getExtent() };
+		std::unique_ptr<WmeSwapChain> wmeSwapChain;
 		std::unique_ptr<WmePipeline> wmePipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
+		std::unique_ptr<WmeModel> wmeModel;
 	};
 }

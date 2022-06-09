@@ -6,6 +6,7 @@
 #include <vulkan/vulkan.h>
 
 // std lib headers
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -16,11 +17,12 @@ namespace wme
     public:
         static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-        WmeSwapChain(WmeDevice &deviceRef, VkExtent2D windowExtent);
+        WmeSwapChain(WmeDevice &deviceRef, VkExtent2D extent);
+        WmeSwapChain(WmeDevice &deviceRef, VkExtent2D extent, std::shared_ptr<WmeSwapChain> previous);
         ~WmeSwapChain();
 
         WmeSwapChain(const WmeSwapChain &) = delete;
-        void operator=(const WmeSwapChain &) = delete;
+        WmeSwapChain& operator= (const WmeSwapChain &) = delete;
 
         VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
         VkRenderPass getRenderPass() { return renderPass; }
@@ -38,6 +40,7 @@ namespace wme
         VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
     private:
+        void init();
         void createSwapChain();
         void createImageViews();
         void createDepthResources();
@@ -68,6 +71,7 @@ namespace wme
         VkExtent2D windowExtent;
 
         VkSwapchainKHR swapChain;
+        std::shared_ptr<WmeSwapChain> oldSwapChain;
 
         std::vector<VkSemaphore> imageAvailableSemaphores;
         std::vector<VkSemaphore> renderFinishedSemaphores;

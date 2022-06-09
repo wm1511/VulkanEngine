@@ -39,7 +39,7 @@ namespace wme
         WmeDevice(const WmeDevice &) = delete;
         void operator=(const WmeDevice &) = delete;
         WmeDevice(WmeDevice &&) = delete;
-        WmeDevice &operator=(WmeDevice &&) = delete;
+        WmeDevice& operator= (WmeDevice &&) = delete;
 
         VkCommandPool getCommandPool() { return commandPool; }
         VkDevice device() { return device_; }

@@ -14,6 +14,18 @@ namespace wme
 
     WmeSwapChain::WmeSwapChain(WmeDevice &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} 
     {
+        init();
+    }
+
+    WmeSwapChain::WmeSwapChain(WmeDevice& deviceRef, VkExtent2D extent, std::shared_ptr<WmeSwapChain> previous) 
+        : device{ deviceRef }, windowExtent{ extent }, oldSwapChain{previous}
+    {
+        init();
+        oldSwapChain = nullptr;
+    }
+
+    void WmeSwapChain::init()
+    {
         createSwapChain();
         createImageViews();
         createRenderPass();
@@ -120,7 +132,7 @@ namespace wme
         return result;
     }
 
-    void WmeSwapChain::createSwapChain() 
+    void WmeSwapChain::createSwapChain()
     {
         SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();
 
@@ -166,7 +178,7 @@ namespace wme
         createInfo.presentMode = presentMode;
         createInfo.clipped = VK_TRUE;
 
-        createInfo.oldSwapchain = VK_NULL_HANDLE;
+        createInfo.oldSwapchain = oldSwapChain == nullptr ? VK_NULL_HANDLE : oldSwapChain->swapChain;
 
         if (vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) 
             throw std::runtime_error("failed to create swap chain!");
@@ -361,7 +373,7 @@ namespace wme
         const std::vector<VkSurfaceFormatKHR> &availableFormats) 
     {
         for (const auto &availableFormat : availableFormats) 
-            if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM &&
+            if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
                 availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) 
                     return availableFormat;
 
@@ -371,7 +383,7 @@ namespace wme
     VkPresentModeKHR WmeSwapChain::chooseSwapPresentMode(
         const std::vector<VkPresentModeKHR> &availablePresentModes) 
     {
-        /*for (const auto &availablePresentMode : availablePresentModes) 
+       /* for (const auto &availablePresentMode : availablePresentModes) 
         {
             if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) 
             {
