@@ -147,25 +147,4 @@ namespace wme
 				throw std::runtime_error("Swap chain image or depth format has changed");
 		}
 	}
-
-	//void LveRenderer::recreateSwapChain() {
-	//	auto extent = lveWindow.getExtent();
-	//	while (extent.width == 0 || extent.height == 0) {
-	//		extent = lveWindow.getExtent();
-	//		glfwWaitEvents();
-	//	}
-	//	vkDeviceWaitIdle(lveDevice.device());
-
-	//	if (lveSwapChain == nullptr) {
-	//		lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent);
-	//	}
-	//	else {
-	//		std::shared_ptr<LveSwapChain> oldSwapChain = std::move(lveSwapChain);
-	//		lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent, oldSwapChain);
-
-	//		if (!oldSwapChain->compareSwapFormats(*lveSwapChain.get())) {
-	//			throw std::runtime_error("Swap chain image(or depth) format has changed!");
-	//		}
-	//	}
-	//}
 }

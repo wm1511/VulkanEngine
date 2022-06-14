@@ -37,6 +37,7 @@ namespace wme
 		}
 
 		VkRenderPass getSwapChainRenderPass() const { return wmeSwapChain->getRenderPass(); }
+		float getAspectRatio() const { return wmeSwapChain->extentAspectRatio(); }
 
 	private:
 		void createCommandBuffers();

@@ -159,8 +159,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="keyboardController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="renderSystem.cpp" />
+    <ClCompile Include="wmeCamera.cpp" />
     <ClCompile Include="wmeDevice.cpp" />
     <ClCompile Include="wmeModel.cpp" />
     <ClCompile Include="wmePipeline.cpp" />
@@ -170,7 +172,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.hpp" />
+    <ClInclude Include="keyboardController.hpp" />
     <ClInclude Include="renderSystem.hpp" />
+    <ClInclude Include="wmeCamera.hpp" />
     <ClInclude Include="wmeDevice.hpp" />
     <ClInclude Include="wmeGameObject.hpp" />
     <ClInclude Include="wmeModel.hpp" />

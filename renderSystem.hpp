@@ -1,5 +1,6 @@
 #pragma once
 
+#include "wmeCamera.hpp"
 #include "wmeDevice.hpp"
 #include "wmePipeline.hpp"
 #include "wmeGameObject.hpp"
@@ -17,7 +18,7 @@ namespace wme
 		RenderSystem(const RenderSystem&) = delete;
 		RenderSystem& operator= (const RenderSystem&) = delete;
 
-		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<WmeGameObject>& gameObjects);
+		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<WmeGameObject>& gameObjects, const WmeCamera& camera);
 	private:
 		void createPipelineLayout();
 		void createPipeline(VkRenderPass renderPass);

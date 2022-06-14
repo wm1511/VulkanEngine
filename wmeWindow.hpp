@@ -15,11 +15,12 @@ namespace wme
 		WmeWindow(const WmeWindow&) = delete;
 		WmeWindow& operator= (const WmeWindow&) = delete;
 
-		bool shouldClose() { return glfwWindowShouldClose(window); };
-		VkExtent2D getExtent() { return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) }; };
 		void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
-		bool wasWindowResized() { return framebufferResized; };
-		void resetWindowResizedFlag() { framebufferResized = false; };
+		bool shouldClose() { return glfwWindowShouldClose(window); }
+		VkExtent2D getExtent() { return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) }; }
+		GLFWwindow* getGLFWwindow() const { return window; }
+		bool wasWindowResized() { return framebufferResized; }
+		void resetWindowResizedFlag() { framebufferResized = false; }
 
 	private:
 		static void framebufferResizeCallback(GLFWwindow* window, int width, int height);

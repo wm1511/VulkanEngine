@@ -1,4 +1,7 @@
 #include "app.hpp"
+
+#include "keyboardController.hpp"
+#include "wmeCamera.hpp"
 #include "renderSystem.hpp"
 
 #define GLM_FORCE_RADIANS
@@ -8,6 +11,7 @@
 
 #include <stdexcept>
 #include <array>
+#include <chrono>
 #include <cassert>
 
 namespace wme
@@ -19,14 +23,31 @@ namespace wme
 	void App::run()
 	{
 		RenderSystem renderSystem{wmeDevice, wmeRenderer.getSwapChainRenderPass()};
+        WmeCamera camera{};
+    
+        auto viewerObject = WmeGameObject::createGameObject();
+        KeyboardMovementController cameraController{};
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
+
 		while (!wmeWindow.shouldClose())
 		{
 			glfwPollEvents();
+
+            auto newTime = std::chrono::high_resolution_clock::now();
+            float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+            currentTime = newTime;
+
+            cameraController.moveInPlaneXZ(wmeWindow.getGLFWwindow(), frameTime, viewerObject);
+            camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 			
-			if (auto commandBuffer = wmeRenderer.beginFrame())
+            float aspectRatio = wmeRenderer.getAspectRatio();
+            camera.setPerspectiveProjection(glm::radians(50.0f), aspectRatio, 0.1f, 10.0f);
+			
+            if (auto commandBuffer = wmeRenderer.beginFrame())
 			{
 				wmeRenderer.beginSwapChainRenderPass(commandBuffer);
-				renderSystem.renderGameObjects(commandBuffer, gameObjects);
+				renderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
 				wmeRenderer.endSwapChainRenderPass(commandBuffer);
 				wmeRenderer.endFrame();
 			}
@@ -34,23 +55,73 @@ namespace wme
 		vkDeviceWaitIdle(wmeDevice.device());
 	}
 
+    std::unique_ptr<WmeModel> createCubeModel(WmeDevice& device, glm::vec3 offset) 
+    {
+        std::vector<WmeModel::Vertex> vertices
+        {
+            // left face (white)
+            {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+            {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+            {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
+            {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+            {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
+            {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+
+            // right face (yellow)
+            {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+            {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+            {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
+            {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+            {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
+            {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+
+            // top face (orange, remember y axis points down)
+            {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+            {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+            {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+            {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+            {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+            {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+
+            // bottom face (red)
+            {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+            {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+            {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
+            {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+            {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+            {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+
+            // nose face (blue)
+            {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+            {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+            {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+
+            // tail face (green)
+            {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+            {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+            {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+
+        };
+        for (auto& v : vertices) 
+            v.position += offset;
+        
+        return std::make_unique<WmeModel>(device, vertices);
+    }
+
 	void App::loadGameObjects()
 	{
-		std::vector<WmeModel::Vertex> vertices
-		{
-			{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-			{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-			{{0.0f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-		};
-		auto wmeModel = std::make_shared<WmeModel>(wmeDevice, vertices);
+        std::shared_ptr<WmeModel> wmeModel = createCubeModel(wmeDevice, { .0f, .0f, .0f });
 
-		auto triangle = WmeGameObject::createGameObject();
-		triangle.model = wmeModel;
-		triangle.color = { .1f, .8f, .1f };
-		triangle.transform2d.translation.x = .2f;
-		triangle.transform2d.scale = { 2.0f, 0.5f };
-		triangle.transform2d.rotation = -0.25f * glm::two_pi<float>();
-
-		gameObjects.push_back(std::move(triangle));
+        auto cube = WmeGameObject::createGameObject();
+        cube.model = wmeModel;
+        cube.transform.translation = { .0f, .0f, 3.0f };
+        cube.transform.scale = { 1.0f, 1.0f, 1.0f };
+        gameObjects.push_back(std::move(cube));
 	}
 }
