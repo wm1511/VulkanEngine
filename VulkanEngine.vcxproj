@@ -160,17 +160,22 @@
   <ItemGroup>
     <ClCompile Include="app.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="renderSystem.cpp" />
     <ClCompile Include="wmeDevice.cpp" />
     <ClCompile Include="wmeModel.cpp" />
     <ClCompile Include="wmePipeline.cpp" />
+    <ClCompile Include="wmeRenderer.cpp" />
     <ClCompile Include="wmeSwapChain.cpp" />
     <ClCompile Include="wmeWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.hpp" />
+    <ClInclude Include="renderSystem.hpp" />
     <ClInclude Include="wmeDevice.hpp" />
+    <ClInclude Include="wmeGameObject.hpp" />
     <ClInclude Include="wmeModel.hpp" />
     <ClInclude Include="wmePipeline.hpp" />
+    <ClInclude Include="wmeRenderer.hpp" />
     <ClInclude Include="wmeSwapChain.hpp" />
     <ClInclude Include="wmeWindow.hpp" />
   </ItemGroup>

@@ -39,6 +39,12 @@
     <ClCompile Include="wmeModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wmeRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="renderSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wmeWindow.hpp">
@@ -57,6 +63,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wmeModel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wmeGameObject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wmeRenderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="renderSystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
