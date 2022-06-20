@@ -113,7 +113,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.211.0\Include;C:\Program Files\Microsoft Visual Studio\Libraries\glm;C:\Program Files\Microsoft Visual Studio\Libraries\glfw-3.3.7.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.211.0\Include;C:\Program Files\Microsoft Visual Studio\Libraries\glm;C:\Program Files\Microsoft Visual Studio\Libraries\glfw-3.3.7.bin.WIN64\include;C:\Program Files\Microsoft Visual Studio\Libraries\tiny_obj_loader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.211.0\Include;C:\Program Files\Microsoft Visual Studio\Libraries\glm;C:\Program Files\Microsoft Visual Studio\Libraries\glfw-3.3.7.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\VulkanSDK\1.3.211.0\Include;C:\Program Files\Microsoft Visual Studio\Libraries\glm;C:\Program Files\Microsoft Visual Studio\Libraries\glfw-3.3.7.bin.WIN64\include;C:\Program Files\Microsoft Visual Studio\Libraries\tiny_obj_loader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -162,8 +162,10 @@
     <ClCompile Include="keyboardController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="renderSystem.cpp" />
+    <ClCompile Include="wmeBuffer.cpp" />
     <ClCompile Include="wmeCamera.cpp" />
     <ClCompile Include="wmeDevice.cpp" />
+    <ClCompile Include="wmeGameObject.cpp" />
     <ClCompile Include="wmeModel.cpp" />
     <ClCompile Include="wmePipeline.cpp" />
     <ClCompile Include="wmeRenderer.cpp" />
@@ -174,13 +176,16 @@
     <ClInclude Include="app.hpp" />
     <ClInclude Include="keyboardController.hpp" />
     <ClInclude Include="renderSystem.hpp" />
+    <ClInclude Include="wmeBuffer.hpp" />
     <ClInclude Include="wmeCamera.hpp" />
     <ClInclude Include="wmeDevice.hpp" />
+    <ClInclude Include="wmeFrameInfo.hpp" />
     <ClInclude Include="wmeGameObject.hpp" />
     <ClInclude Include="wmeModel.hpp" />
     <ClInclude Include="wmePipeline.hpp" />
     <ClInclude Include="wmeRenderer.hpp" />
     <ClInclude Include="wmeSwapChain.hpp" />
+    <ClInclude Include="wmeUtils.hpp" />
     <ClInclude Include="wmeWindow.hpp" />
   </ItemGroup>
   <ItemGroup>

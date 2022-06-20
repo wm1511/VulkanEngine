@@ -2,6 +2,7 @@
 
 #include "wmeCamera.hpp"
 #include "wmeDevice.hpp"
+#include "wmeFrameInfo.hpp"
 #include "wmePipeline.hpp"
 #include "wmeGameObject.hpp"
 
@@ -18,7 +19,7 @@ namespace wme
 		RenderSystem(const RenderSystem&) = delete;
 		RenderSystem& operator= (const RenderSystem&) = delete;
 
-		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<WmeGameObject>& gameObjects, const WmeCamera& camera);
+		void renderGameObjects(FrameInfo& frameInfo, std::vector<WmeGameObject>& gameObjects);
 	private:
 		void createPipelineLayout();
 		void createPipeline(VkRenderPass renderPass);

@@ -51,6 +51,12 @@
     <ClCompile Include="keyboardController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wmeGameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wmeBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wmeWindow.hpp">
@@ -84,6 +90,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="keyboardController.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wmeUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wmeBuffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wmeFrameInfo.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

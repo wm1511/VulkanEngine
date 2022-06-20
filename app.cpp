@@ -3,6 +3,7 @@
 #include "keyboardController.hpp"
 #include "wmeCamera.hpp"
 #include "renderSystem.hpp"
+#include "wmeBuffer.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -16,12 +17,29 @@
 
 namespace wme
 {
+	struct GlobalUbo
+	{
+		glm::mat4 projectionView{ 1.f };
+		glm::vec3 lightDirection = glm::normalize(glm::vec3{1.f, -3.f, -1.f});
+	};
+
 	App::App() { loadGameObjects(); }
 
 	App::~App() {}
 
 	void App::run()
 	{
+		WmeBuffer globalUboBuffer
+		{
+			wmeDevice,
+			sizeof(GlobalUbo),
+			WmeSwapChain::MAX_FRAMES_IN_FLIGHT,
+			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+			wmeDevice.properties.limits.minUniformBufferOffsetAlignment
+		};
+		globalUboBuffer.map();
+
 		RenderSystem renderSystem{wmeDevice, wmeRenderer.getSwapChainRenderPass()};
         WmeCamera camera{};
     
@@ -46,8 +64,22 @@ namespace wme
 			
             if (auto commandBuffer = wmeRenderer.beginFrame())
 			{
+				int frameIndex = wmeRenderer.getFrameIndex();
+				FrameInfo frameInfo
+				{
+					frameIndex,
+					frameTime,
+					commandBuffer,
+					camera
+				};
+
+				GlobalUbo ubo{};
+				ubo.projectionView = camera.getProjection() * camera.getView();
+				globalUboBuffer.writeToIndex(&ubo, frameIndex);
+				globalUboBuffer.flushIndex(frameIndex);
+
 				wmeRenderer.beginSwapChainRenderPass(commandBuffer);
-				renderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
+				renderSystem.renderGameObjects(frameInfo, gameObjects);
 				wmeRenderer.endSwapChainRenderPass(commandBuffer);
 				wmeRenderer.endFrame();
 			}
@@ -55,73 +87,15 @@ namespace wme
 		vkDeviceWaitIdle(wmeDevice.device());
 	}
 
-    std::unique_ptr<WmeModel> createCubeModel(WmeDevice& device, glm::vec3 offset) 
-    {
-        std::vector<WmeModel::Vertex> vertices
-        {
-            // left face (white)
-            {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
-            {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
-            {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
-            {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
-            {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
-            {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
-
-            // right face (yellow)
-            {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
-            {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
-            {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
-            {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
-
-            // top face (orange, remember y axis points down)
-            {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
-            {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
-            {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
-            {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
-            {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
-            {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
-
-            // bottom face (red)
-            {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
-            {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
-            {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
-            {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
-            {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
-
-            // nose face (blue)
-            {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
-            {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
-            {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
-            {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
-            {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
-            {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
-
-            // tail face (green)
-            {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
-            {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-            {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-            {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
-            {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
-            {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-
-        };
-        for (auto& v : vertices) 
-            v.position += offset;
-        
-        return std::make_unique<WmeModel>(device, vertices);
-    }
-
 	void App::loadGameObjects()
 	{
-        std::shared_ptr<WmeModel> wmeModel = createCubeModel(wmeDevice, { .0f, .0f, .0f });
+		std::shared_ptr<WmeModel> wmeModel = WmeModel::createModelFromFile(wmeDevice, "models/porsche_911.obj");
 
-        auto cube = WmeGameObject::createGameObject();
-        cube.model = wmeModel;
-        cube.transform.translation = { .0f, .0f, 3.0f };
-        cube.transform.scale = { 1.0f, 1.0f, 1.0f };
-        gameObjects.push_back(std::move(cube));
+        auto gameObj = WmeGameObject::createGameObject();
+        gameObj.model = wmeModel;
+        gameObj.transform.translation = { .0f, .0f, 3.0f };
+        gameObj.transform.scale = { 1.0f, 1.0f, 1.0f };
+		gameObj.transform.rotation = { 3.1415f, 3.1415f, .0f};
+        gameObjects.push_back(std::move(gameObj));
 	}
 }

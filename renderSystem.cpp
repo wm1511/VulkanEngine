@@ -13,7 +13,7 @@ namespace wme
 	struct PushConstantsData
 	{
 		glm::mat4 transform{ 1.0f };
-		alignas(16) glm::vec3 color;
+		glm::mat4 normalMatrix{ 1.0f };
 	};
 
 	RenderSystem::RenderSystem(WmeDevice& device, VkRenderPass renderPass) : wmeDevice{device}
@@ -59,27 +59,28 @@ namespace wme
 			pipelineConfig);
 	}
 
-	void RenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<WmeGameObject>& gameObjects, const WmeCamera& camera)
+	void RenderSystem::renderGameObjects(FrameInfo& frameInfo, std::vector<WmeGameObject>& gameObjects)
 	{
-		wmePipeline->bind(commandBuffer);
+		wmePipeline->bind(frameInfo.commandBuffer);
 
 		for (auto& obj : gameObjects)
 		{
-			auto projectionView = camera.getProjection() * camera.getView();
+			auto projectionView = frameInfo.camera.getProjection() * frameInfo.camera.getView();
 
 			PushConstantsData push{};
-			push.color = obj.color;
-			push.transform = projectionView * obj.transform.mat4();
+			auto modelMatrix = obj.transform.mat4();
+			push.transform = projectionView * modelMatrix;
+			push.normalMatrix = obj.transform.normalMatrix();
 
 			vkCmdPushConstants(
-				commandBuffer,
+				frameInfo.commandBuffer,
 				pipelineLayout,
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
 				0,
 				sizeof(PushConstantsData),
 				&push);
-			obj.model->bind(commandBuffer);
-			obj.model->draw(commandBuffer);
+			obj.model->bind(frameInfo.commandBuffer);
+			obj.model->draw(frameInfo.commandBuffer);
 		}
 	}
 }
