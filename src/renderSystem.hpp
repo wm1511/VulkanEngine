@@ -14,14 +14,14 @@ namespace wme
 	class RenderSystem
 	{
 	public:
-		RenderSystem(WmeDevice& device, VkRenderPass renderPass);
+		RenderSystem(WmeDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
 		~RenderSystem();
 		RenderSystem(const RenderSystem&) = delete;
 		RenderSystem& operator= (const RenderSystem&) = delete;
 
-		void renderGameObjects(FrameInfo& frameInfo, std::vector<WmeGameObject>& gameObjects);
+		void renderGameObjects(FrameInfo& frameInfo);
 	private:
-		void createPipelineLayout();
+		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
 		void createPipeline(VkRenderPass renderPass);
 
 		WmeDevice& wmeDevice;

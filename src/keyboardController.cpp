@@ -6,19 +6,6 @@ namespace wme
 {
 	void wme::KeyboardMovementController::moveInPlaneXZ(GLFWwindow* window, float dt, WmeGameObject& gameObject)
 	{
-		glm::vec3 rotate{ 0 };
-
-		if (glfwGetKey(window, keys.lookRight) == GLFW_PRESS) rotate.y += 1.f;
-		if (glfwGetKey(window, keys.lookLeft) == GLFW_PRESS) rotate.y -= 1.f;
-		if (glfwGetKey(window, keys.lookUp) == GLFW_PRESS) rotate.x += 1.f;
-		if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS) rotate.x -= 1.f;
-
-		if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon())
-			gameObject.transform.rotation += lookSpeed * dt * glm::normalize(rotate);
-
-		gameObject.transform.rotation.x = glm::clamp(gameObject.transform.rotation.x, -1.5f, 1.5f);
-		gameObject.transform.rotation.y = glm::mod(gameObject.transform.rotation.y, glm::two_pi<float>());
-
 		float yaw = gameObject.transform.rotation.y;
 		const glm::vec3 forwardDir{ sin(yaw), 0.f, cos(yaw) };
 		const glm::vec3 rightDir{ forwardDir.z, 0.f, -forwardDir.x };
@@ -34,5 +21,19 @@ namespace wme
 
 		if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon())
 			gameObject.transform.translation += moveSpeed * dt * glm::normalize(moveDir);
+	}
+
+	void KeyboardMovementController::controlCursorMode(GLFWwindow* window)
+	{
+		if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
+		{
+			if (glfwGetKey(window, keys.releaseCursor) == GLFW_PRESS) 
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+		else if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL)
+		{
+			if (glfwGetKey(window, keys.captureCursor) == GLFW_PRESS)
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
 	}
 }

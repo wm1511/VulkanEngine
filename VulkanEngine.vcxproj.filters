@@ -1,105 +1,108 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="shaders">
       <UniqueIdentifier>{747bde26-f82d-41a3-8121-6fbeb98e5ddf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{bc1bae02-6130-4b85-b06d-0a3cb5cc0848}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\app.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="wmeWindow.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="app.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\keyboardController.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="wmePipeline.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\mouseController.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="wmeDevice.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\renderSystem.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="wmeSwapChain.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\wmeBuffer.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="wmeModel.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\wmeCamera.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="wmeRenderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\wmeDescriptors.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="renderSystem.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\wmeGameObject.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="wmeCamera.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\wmeDevice.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="keyboardController.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\wmeModel.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="wmeGameObject.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\wmeRenderer.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="wmeBuffer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\wmePipeline.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wmeSwapChain.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wmeWindow.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="wmeWindow.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeUtils.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="app.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeWindow.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="wmePipeline.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeSwapChain.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="wmeDevice.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeRenderer.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="wmeSwapChain.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmePipeline.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="wmeModel.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeModel.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="wmeGameObject.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeGameObject.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="wmeRenderer.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeFrameInfo.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="renderSystem.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeDevice.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="wmeCamera.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeDescriptors.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="keyboardController.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeCamera.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="wmeUtils.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\wmeBuffer.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="wmeBuffer.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\renderSystem.hpp">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="wmeFrameInfo.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\mouseController.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\keyboardController.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app.hpp">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -108,9 +111,6 @@
     </None>
     <None Include="shaders\shader.vert">
       <Filter>shaders</Filter>
-    </None>
-    <None Include="compile.bat">
-      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
 </Project>

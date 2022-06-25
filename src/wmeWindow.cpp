@@ -29,6 +29,13 @@ namespace wme
 		wmeWindow->height = height;
 	}
 
+	void WmeWindow::cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
+	{
+		auto wmeWindow = reinterpret_cast<WmeWindow*>(glfwGetWindowUserPointer(window));
+		wmeWindow->cursorX = xpos;
+		wmeWindow->cursorY = ypos;
+	}
+
 	void WmeWindow::initWindow()
 	{
 		glfwInit();
@@ -38,5 +45,11 @@ namespace wme
 		window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
 		glfwSetWindowUserPointer(window, this);
 		glfwSetWindowSizeCallback(window, framebufferResizeCallback);
+		
+		glfwSetCursorPosCallback(window, cursorPositionCallback);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+		if (glfwRawMouseMotionSupported() == GLFW_TRUE)
+			glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 	}
 }
