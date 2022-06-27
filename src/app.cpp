@@ -3,7 +3,8 @@
 #include "keyboardController.hpp"
 #include "mouseController.hpp"
 #include "wmeCamera.hpp"
-#include "renderSystem.hpp"
+#include "systems/renderSystem.hpp"
+#include "systems/pointLightSystem.hpp"
 #include "wmeBuffer.hpp"
 
 #define GLM_FORCE_RADIANS
@@ -20,7 +21,8 @@ namespace wme
 {
 	struct GlobalUbo
 	{
-		glm::mat4 projectionView{ 1.f };
+		glm::mat4 projection{ 1.f };
+		glm::mat4 view{ 1.f };
 		glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, .02f };
 		glm::vec3 lightPosition{ -1.0f };
 		alignas(16) glm::vec4 lightColor{ 1.0f };
@@ -67,6 +69,7 @@ namespace wme
 		}
 
 		RenderSystem renderSystem{wmeDevice, wmeRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout()};
+		PointLightSystem pointLightSystem{wmeDevice, wmeRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout()};
         WmeCamera camera{};
     
         auto viewerObject = WmeGameObject::createGameObject();
@@ -126,12 +129,14 @@ namespace wme
 				};
 
 				GlobalUbo ubo{};
-				ubo.projectionView = camera.getProjection() * camera.getView();
+				ubo.projection = camera.getProjection();
+				ubo.view = camera.getView();
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
 
 				wmeRenderer.beginSwapChainRenderPass(commandBuffer);
 				renderSystem.renderGameObjects(frameInfo);
+				pointLightSystem.render(frameInfo);
 				wmeRenderer.endSwapChainRenderPass(commandBuffer);
 				wmeRenderer.endFrame();
 			}
@@ -142,12 +147,12 @@ namespace wme
 	void App::loadGameObjects()
 	{
 		std::shared_ptr<WmeModel> wmeModel = WmeModel::createModelFromFile(wmeDevice, "models/smooth_vase.obj");
-        auto gameObj = WmeGameObject::createGameObject();
-        gameObj.model = wmeModel;
-        gameObj.transform.translation = { .0f, .5f, 1.f };
-        gameObj.transform.scale = { 1.0f, 1.0f, 1.0f };
-		gameObj.transform.rotation = { .0f, .0f, .0f};
-        gameObjects.emplace(gameObj.getId(), std::move(gameObj));
+        auto vase = WmeGameObject::createGameObject();
+        vase.model = wmeModel;
+        vase.transform.translation = { .0f, .5f, 1.f };
+        vase.transform.scale = { 1.0f, 1.0f, 1.0f };
+		vase.transform.rotation = { .0f, .0f, .0f};
+        gameObjects.emplace(vase.getId(), std::move(vase));
 		
 		wmeModel = WmeModel::createModelFromFile(wmeDevice, "models/quad.obj");
         auto floor = WmeGameObject::createGameObject();

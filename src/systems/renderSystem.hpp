@@ -1,10 +1,10 @@
 #pragma once
 
-#include "wmeCamera.hpp"
-#include "wmeDevice.hpp"
-#include "wmeFrameInfo.hpp"
-#include "wmePipeline.hpp"
-#include "wmeGameObject.hpp"
+#include "..\wmeCamera.hpp"
+#include "..\wmeDevice.hpp"
+#include "..\wmeFrameInfo.hpp"
+#include "..\wmePipeline.hpp"
+#include "..\wmeGameObject.hpp"
 
 #include <memory>
 #include <vector>

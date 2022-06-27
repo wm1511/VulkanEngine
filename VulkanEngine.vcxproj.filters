@@ -7,6 +7,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{bc1bae02-6130-4b85-b06d-0a3cb5cc0848}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\systems">
+      <UniqueIdentifier>{a1f85dcc-dea2-403b-8859-7f1fb9f98dd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp">
@@ -19,9 +22,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\mouseController.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderSystem.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\wmeBuffer.cpp">
@@ -53,6 +53,12 @@
     </ClCompile>
     <ClCompile Include="src\wmeWindow.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systems\pointLightSystem.cpp">
+      <Filter>src\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\systems\renderSystem.cpp">
+      <Filter>src\systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -92,9 +98,6 @@
     <ClInclude Include="src\wmeBuffer.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderSystem.hpp">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\mouseController.hpp">
       <Filter>src</Filter>
     </ClInclude>
@@ -104,12 +107,24 @@
     <ClInclude Include="src\app.hpp">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\systems\pointLightSystem.hpp">
+      <Filter>src\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\systems\renderSystem.hpp">
+      <Filter>src\systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag">
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\shader.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\pointLight.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\pointLight.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

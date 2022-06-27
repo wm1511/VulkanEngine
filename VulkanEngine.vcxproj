@@ -123,7 +123,7 @@
       <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>call "$(SolutionDir)shaders\compile.bat"</Command>
+      <Command>call "$(SolutionDir)compile.bat"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>
@@ -162,7 +162,8 @@
     <ClCompile Include="src\keyboardController.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mouseController.cpp" />
-    <ClCompile Include="src\renderSystem.cpp" />
+    <ClCompile Include="src\systems\pointLightSystem.cpp" />
+    <ClCompile Include="src\systems\renderSystem.cpp" />
     <ClCompile Include="src\wmeBuffer.cpp" />
     <ClCompile Include="src\wmeCamera.cpp" />
     <ClCompile Include="src\wmeDescriptors.cpp" />
@@ -178,7 +179,8 @@
     <ClInclude Include="src\app.hpp" />
     <ClInclude Include="src\keyboardController.hpp" />
     <ClInclude Include="src\mouseController.hpp" />
-    <ClInclude Include="src\renderSystem.hpp" />
+    <ClInclude Include="src\systems\pointLightSystem.hpp" />
+    <ClInclude Include="src\systems\renderSystem.hpp" />
     <ClInclude Include="src\wmeBuffer.hpp" />
     <ClInclude Include="src\wmeCamera.hpp" />
     <ClInclude Include="src\wmeDescriptors.hpp" />
@@ -193,6 +195,8 @@
     <ClInclude Include="src\wmeWindow.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\pointLight.frag" />
+    <None Include="shaders\pointLight.vert" />
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
   </ItemGroup>

@@ -92,6 +92,9 @@ namespace wme
 		configInfo.dynamicStateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
 		configInfo.dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
 		configInfo.dynamicStateInfo.flags = 0;
+
+		configInfo.bindingDescriptions = WmeModel::Vertex::getBindingDescriptions();
+		configInfo.attributeDescriptions = WmeModel::Vertex::getAttributeDescriptions();
 	}
 
 	std::vector<char> WmePipeline::readFile(const std::filesystem::path& filePath)
@@ -139,8 +142,8 @@ namespace wme
 		shaderStages[1].pNext = nullptr;
 		shaderStages[1].pSpecializationInfo = nullptr;
 
-		auto bindingDescriptions = WmeModel::Vertex::getBindingDescriptions();
-		auto attributeDescriptions = WmeModel::Vertex::getAttributeDescriptions();
+		auto& bindingDescriptions = configInfo.bindingDescriptions;
+		auto& attributeDescriptions = configInfo.attributeDescriptions;
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
