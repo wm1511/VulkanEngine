@@ -10,9 +10,9 @@ namespace wme
 {
 	struct PipelineConfigInfo 
 	{
+		PipelineConfigInfo() = default;
 		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
 		PipelineConfigInfo& operator = (const PipelineConfigInfo&) = delete;
-		PipelineConfigInfo() = default;
 
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions{};
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
@@ -45,6 +45,7 @@ namespace wme
 
 		void bind(VkCommandBuffer commandBuffer);
 		static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
+		static void enableAlphaBlending(PipelineConfigInfo& configInfo);
 
 	private:
 		static std::vector<char> readFile(const std::filesystem::path& filePath);

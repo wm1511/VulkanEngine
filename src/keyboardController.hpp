@@ -21,7 +21,7 @@ namespace wme
 		};
 
         void moveInPlaneXZ(GLFWwindow* window, float dt, WmeGameObject& gameObject);
-        void controlCursorMode(GLFWwindow* window);
+        int controlCursorMode(GLFWwindow* window);
 
         KeyMappings keys{};
         float moveSpeed{ 2.f };

@@ -23,17 +23,27 @@ namespace wme
 			gameObject.transform.translation += moveSpeed * dt * glm::normalize(moveDir);
 	}
 
-	void KeyboardMovementController::controlCursorMode(GLFWwindow* window)
+	int KeyboardMovementController::controlCursorMode(GLFWwindow* window)
 	{
 		if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
 		{
-			if (glfwGetKey(window, keys.releaseCursor) == GLFW_PRESS) 
+			if (glfwGetKey(window, keys.releaseCursor) == GLFW_PRESS)
+			{
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				glfwSetCursorPos(window, 0, 0);
+			}
+			return GLFW_CURSOR_DISABLED;
 		}
 		else if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL)
 		{
 			if (glfwGetKey(window, keys.captureCursor) == GLFW_PRESS)
+			{
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+				glfwSetCursorPos(window, 0, 0);
+			}
+			return GLFW_CURSOR_NORMAL;
 		}
+		else
+			return GLFW_CURSOR_NORMAL;
 	}
 }

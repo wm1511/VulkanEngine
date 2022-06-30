@@ -7,9 +7,17 @@
 
 #include <stdexcept>
 #include <array>
+#include <map>
 
 namespace wme
 {
+	struct PointLightPushConstants
+	{
+		glm::vec4 position{};
+		glm::vec4 color{};
+		float radius;
+	};
+
 	PointLightSystem::PointLightSystem(WmeDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout) : wmeDevice{device}
 	{
 		createPipelineLayout(globalSetLayout);
@@ -23,10 +31,10 @@ namespace wme
 
 	void PointLightSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout)
 	{
-		/*VkPushConstantRange pushConstantRange{};
+		VkPushConstantRange pushConstantRange{};
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 		pushConstantRange.offset = 0;
-		pushConstantRange.size = sizeof(PushConstantsData);*/
+		pushConstantRange.size = sizeof(PointLightPushConstants);
 
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
 
@@ -34,8 +42,8 @@ namespace wme
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
 		pipelineInfo.pSetLayouts = descriptorSetLayouts.data();
-		pipelineInfo.pushConstantRangeCount = 0;
-		pipelineInfo.pPushConstantRanges = nullptr;
+		pipelineInfo.pushConstantRangeCount = 1;
+		pipelineInfo.pPushConstantRanges = &pushConstantRange;
 		if (vkCreatePipelineLayout(wmeDevice.device(), &pipelineInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
 			throw std::runtime_error("failed to create pipeline layout");
 	}
@@ -46,6 +54,7 @@ namespace wme
 
 		PipelineConfigInfo pipelineConfig{};
 		WmePipeline::defaultPipelineConfigInfo(pipelineConfig);
+		WmePipeline::enableAlphaBlending(pipelineConfig);
 		pipelineConfig.attributeDescriptions.clear();
 		pipelineConfig.bindingDescriptions.clear();
 		pipelineConfig.renderPass = renderPass;
@@ -57,8 +66,42 @@ namespace wme
 			pipelineConfig);
 	}
 
+	void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo)
+	{
+		auto rotateLight = glm::rotate(glm::mat4(1.0f), frameInfo.frameTime, { 0.f, -1.f, 0.f });
+		int lightIndex = 0;
+		for (auto& kv : frameInfo.gameObjects)
+		{
+			auto& obj = kv.second;
+			if (obj.pointLight == nullptr) 
+				continue;
+
+			assert(lightIndex < MAX_LIGHTS && "Point lights count exceed maximum specified");
+
+			obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.0f));
+
+			ubo.pointLights[lightIndex].position = glm::vec4(obj.transform.translation, 1.0f);
+			ubo.pointLights[lightIndex].color = glm::vec4(obj.color, obj.pointLight->lightIntensity);
+
+			lightIndex++;
+		}
+		ubo.numLights = lightIndex;
+	}
+
 	void PointLightSystem::render(FrameInfo& frameInfo)
 	{
+		std::map<float, WmeGameObject::id_t> sorted;
+		for (auto& kv : frameInfo.gameObjects)
+		{
+			auto& obj = kv.second;
+			if (obj.pointLight == nullptr)
+				continue;
+
+			auto offset = frameInfo.camera.getPosition() - obj.transform.translation;
+			float distSquared = glm::dot(offset, offset);
+			sorted[distSquared] = obj.getId();
+		}
+
 		wmePipeline->bind(frameInfo.commandBuffer);
 
 		vkCmdBindDescriptorSets(
@@ -71,6 +114,24 @@ namespace wme
 			0,
 			nullptr);
 
-		vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+		for (auto it = sorted.rbegin(); it != sorted.rend(); ++it)
+		{
+			auto& obj = frameInfo.gameObjects.at(it->second);
+
+			PointLightPushConstants push{};
+			push.position = glm::vec4(obj.transform.translation, 1.0f);
+			push.color = glm::vec4(obj.color, obj.pointLight->lightIntensity);
+			push.radius = obj.transform.scale.x;
+
+			vkCmdPushConstants(
+				frameInfo.commandBuffer,
+				pipelineLayout,
+				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+				0,
+				sizeof(PointLightPushConstants),
+				&push);
+
+			vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+		}
 	}
 }

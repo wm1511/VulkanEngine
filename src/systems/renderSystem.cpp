@@ -65,11 +65,22 @@ namespace wme
 	{
 		wmePipeline->bind(frameInfo.commandBuffer);
 
-		vkCmdBindDescriptorSets(frameInfo.commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &frameInfo.globalDescriptorSet, 0, nullptr);
+		vkCmdBindDescriptorSets(
+			frameInfo.commandBuffer, 
+			VK_PIPELINE_BIND_POINT_GRAPHICS, 
+			pipelineLayout, 
+			0, 
+			1, 
+			&frameInfo.globalDescriptorSet,
+			0,
+			nullptr);
 
 		for (auto& kv : frameInfo.gameObjects)
 		{
 			auto& obj = kv.second;
+			if (obj.model == nullptr) 
+				continue;
+
 			PushConstantsData push{};
 			push.modelMatrix = obj.transform.mat4();
 			push.normalMatrix = obj.transform.normalMatrix();

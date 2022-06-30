@@ -19,6 +19,11 @@ namespace wme
 		glm::mat4 mat4();
 	};
 
+	struct PointLightComponent
+	{
+		float lightIntensity = 1.0f;
+	};
+
 	class WmeGameObject
 	{
 	public:
@@ -31,6 +36,8 @@ namespace wme
 			return WmeGameObject(currentId++);
 		}
 
+		static WmeGameObject makePointLight(float intensity = 10.0f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.0f));
+
 		WmeGameObject(const WmeGameObject&) = delete;
 		WmeGameObject(WmeGameObject&&) = default;
 		WmeGameObject& operator= (const WmeGameObject&) = delete;
@@ -38,9 +45,11 @@ namespace wme
 
 		const id_t getId() { return id; }
 
-		std::shared_ptr<WmeModel> model;
 		glm::vec3 color{};
 		TransformComponent transform{};
+
+		std::shared_ptr<WmeModel> model;
+		std::unique_ptr<PointLightComponent> pointLight = nullptr;
 
 	private:
 		WmeGameObject(id_t objId) : id{ objId } {}

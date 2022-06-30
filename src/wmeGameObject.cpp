@@ -63,4 +63,13 @@ namespace wme
 			{translation.x, translation.y, translation.z, 1.0f}
 		};
 	}
+
+	WmeGameObject WmeGameObject::makePointLight(float intensity, float radius, glm::vec3 color)
+	{
+		WmeGameObject gameObj = WmeGameObject::createGameObject();
+		gameObj.transform.scale.x = radius;
+		gameObj.pointLight = std::make_unique<PointLightComponent>();
+		gameObj.pointLight->lightIntensity = intensity;
+		return gameObj;
+	}
 }

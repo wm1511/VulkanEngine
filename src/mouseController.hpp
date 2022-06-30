@@ -8,8 +8,8 @@ namespace wme
     class MouseRotationController
     {
     public:
-        void rotateView(GLFWwindow* window, double dx, double dy, float dt, WmeGameObject& gameObject);
+        void rotateView(GLFWwindow* window, double& cursorX, double& cursorY, float dt, WmeGameObject& gameObject);
 
-        float lookSpeed{ 2.f };
+        float lookSpeed{ .05f };
     };
 }

@@ -19,15 +19,6 @@
 
 namespace wme
 {
-	struct GlobalUbo
-	{
-		glm::mat4 projection{ 1.f };
-		glm::mat4 view{ 1.f };
-		glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, .02f };
-		glm::vec3 lightPosition{ -1.0f };
-		alignas(16) glm::vec4 lightColor{ 1.0f };
-	};
-
 	App::App() 
 	{ 
 		globalPool = WmeDescriptorPool::Builder(wmeDevice)
@@ -77,40 +68,24 @@ namespace wme
 		MouseRotationController cameraMouseController{};
 
 		auto currentTime = std::chrono::high_resolution_clock::now();
-		auto dt = 0.01f;
 
-		double currentCursorX = wmeWindow.getCursorX();
-		double currentCursorY = wmeWindow.getCursorY();
+		double cursorX = wmeWindow.getCursorX();
+		double cursorY = wmeWindow.getCursorY();
 
 		while (!wmeWindow.shouldClose())
 		{
 			glfwPollEvents();
 
-			cameraKeyboardController.controlCursorMode(wmeWindow.getGLFWwindow());
-
 			auto newTime = std::chrono::high_resolution_clock::now();
 			float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
 			currentTime = newTime;
 
-			while (frameTime > 0.0f)
+			if (cameraKeyboardController.controlCursorMode(wmeWindow.getGLFWwindow()) == GLFW_CURSOR_DISABLED)
 			{
-				float deltaTime = std::min(frameTime, dt);
-
-				double shiftX = currentCursorX - wmeWindow.getCursorX();
-				double shiftY = currentCursorY - wmeWindow.getCursorY();
-				currentCursorX = wmeWindow.getCursorX();
-				currentCursorY = wmeWindow.getCursorY();
-
-				if (glfwGetInputMode(wmeWindow.getGLFWwindow(), GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
-				{
-					cameraMouseController.rotateView(wmeWindow.getGLFWwindow(), shiftX, shiftY, frameTime, viewerObject);
-					cameraKeyboardController.moveInPlaneXZ(wmeWindow.getGLFWwindow(), frameTime, viewerObject);
-				}
-
-				frameTime -= deltaTime;
+				cameraMouseController.rotateView(wmeWindow.getGLFWwindow(), cursorX, cursorY, frameTime, viewerObject);
+				cameraKeyboardController.moveInPlaneXZ(wmeWindow.getGLFWwindow(), frameTime, viewerObject);
+				camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 			}
-
-			camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 			
 			float aspectRatio = wmeRenderer.getAspectRatio();
 			camera.setPerspectiveProjection(glm::radians(50.0f), aspectRatio, 0.1f, 100.0f);
@@ -131,6 +106,8 @@ namespace wme
 				GlobalUbo ubo{};
 				ubo.projection = camera.getProjection();
 				ubo.view = camera.getView();
+				ubo.inverseView = camera.getInverseView();
+				pointLightSystem.update(frameInfo, ubo);
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
 
@@ -161,11 +138,30 @@ namespace wme
 		floor.transform.scale = { 5.0f, 1.0f, 5.0f };
 		floor.transform.rotation = { .0f, .0f, .0f};
         gameObjects.emplace(floor.getId(), std::move(floor));
+		
+		std::vector<glm::vec3> lightColors
+		{
+			{1.f, .1f, .1f},
+			{.1f, .1f, 1.f},
+			{.1f, 1.f, .1f},
+			{1.f, 1.f, .1f},
+			{.1f, 1.f, 1.f},
+			{1.f, 1.f, 1.f}
+		};
+
+		for (int i = 0; i < lightColors.size(); i++)
+		{
+			auto pointLight = WmeGameObject::makePointLight(0.5f);
+			pointLight.color = lightColors[i];
+			auto rotateLight = glm::rotate(glm::mat4(1.0f), (i * glm::two_pi<float>()) / lightColors.size(), { 0.f, -1.f, 0.f });
+			pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -2.2f, -1.f, 1.f));
+			gameObjects.emplace(pointLight.getId(), std::move(pointLight));
+		}
 
 		/*wmeModel = WmeModel::createModelFromFile(wmeDevice, "models/R8.obj");
 		auto car = WmeGameObject::createGameObject();
 		car.model = wmeModel;
-		car.transform.translation = { 2.0f, .5f, .0f };
+		car.transform.translation = { .0f, .5f, .0f };
 		car.transform.scale = { 1.0f, 1.0f, 1.0f };
 		car.transform.rotation = { .0f, .0f, glm::pi<float>() };
 		gameObjects.emplace(car.getId(), std::move(car));*/
