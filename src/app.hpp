@@ -5,6 +5,7 @@
 #include "wmeWindow.hpp"
 #include "wmeGameObject.hpp"
 #include "wmeDescriptors.hpp"
+#include "systems/pointLightSystem.hpp"
 
 #include <memory>
 #include <vector>
@@ -25,13 +26,12 @@ namespace wme
 		void run();
 
 	private:
-		void loadGameObjects();
-
-		WmeWindow wmeWindow{ WIDTH, HEIGHT, "Test Vulkan" };
+		WmeWindow wmeWindow{ WIDTH, HEIGHT, "VkMaze" };
 		WmeDevice wmeDevice{ wmeWindow };
 		WmeRenderer wmeRenderer{ wmeWindow, wmeDevice };
 
 		std::unique_ptr<WmeDescriptorPool> globalPool;
 		WmeGameObject::Map gameObjects;
+		mg::WorldInfo worldInfo;
 	};
 }

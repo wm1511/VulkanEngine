@@ -10,6 +10,9 @@
     <Filter Include="src\systems">
       <UniqueIdentifier>{a1f85dcc-dea2-403b-8859-7f1fb9f98dd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\world">
+      <UniqueIdentifier>{b41296ef-a589-4117-9ac6-254555024fd0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp">
@@ -59,6 +62,15 @@
     </ClCompile>
     <ClCompile Include="src\systems\renderSystem.cpp">
       <Filter>src\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\Generator.cpp">
+      <Filter>src\world</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\Grid.cpp">
+      <Filter>src\world</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\Maze.cpp">
+      <Filter>src\world</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +124,18 @@
     </ClInclude>
     <ClInclude Include="src\systems\renderSystem.hpp">
       <Filter>src\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\Generator.hpp">
+      <Filter>src\world</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\Grid.hpp">
+      <Filter>src\world</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\Maze.hpp">
+      <Filter>src\world</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\WorldInfo.hpp">
+      <Filter>src\world</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

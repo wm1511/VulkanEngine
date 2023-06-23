@@ -66,7 +66,7 @@ namespace wme
 			pipelineConfig);
 	}
 
-	void PointLightSystem::update(FrameInfo& frameInfo, GlobalUbo& ubo)
+	void PointLightSystem::update(mg::WorldInfo& worldInfo, FrameInfo& frameInfo, GlobalUbo& ubo)
 	{
 		auto rotateLight = glm::rotate(glm::mat4(1.0f), frameInfo.frameTime, { 0.f, -1.f, 0.f });
 		int lightIndex = 0;
@@ -78,10 +78,21 @@ namespace wme
 
 			assert(lightIndex < MAX_LIGHTS && "Point lights count exceed maximum specified");
 
-			obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.0f));
+			if (!lightIndex)
+			{
+				ubo.pointLights[lightIndex].position = glm::vec4(frameInfo.camera.getPosition().x, frameInfo.camera.getPosition().y + .5f, frameInfo.camera.getPosition().z, 1.0f);
+				float green = (frameInfo.camera.getPosition().x + worldInfo.startX + frameInfo.camera.getPosition().z + worldInfo.startZ) / (4.f * worldInfo.unit * worldInfo.mazeSize);
+				float red = 1.f - green;
+				float blue = .5f;
+				ubo.pointLights[lightIndex].color = glm::vec4(glm::vec3(red, green, blue), obj.pointLight->lightIntensity);
+			}
+			else
+			{
+				obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.0f));
 
-			ubo.pointLights[lightIndex].position = glm::vec4(obj.transform.translation, 1.0f);
-			ubo.pointLights[lightIndex].color = glm::vec4(obj.color, obj.pointLight->lightIntensity);
+				ubo.pointLights[lightIndex].position = glm::vec4(obj.transform.translation, 1.0f);
+				ubo.pointLights[lightIndex].color = glm::vec4(glm::vec3(1.0f), obj.pointLight->lightIntensity);
+			}
 
 			lightIndex++;
 		}

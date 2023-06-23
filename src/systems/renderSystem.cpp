@@ -61,7 +61,7 @@ namespace wme
 			pipelineConfig);
 	}
 
-	void RenderSystem::renderGameObjects(FrameInfo& frameInfo)
+	void RenderSystem::renderGameObjects(FrameInfo& frameInfo, mg::WorldInfo& worldInfo)
 	{
 		wmePipeline->bind(frameInfo.commandBuffer);
 
@@ -79,6 +79,9 @@ namespace wme
 		{
 			auto& obj = kv.second;
 			if (obj.model == nullptr) 
+				continue;
+
+			if (glm::length(frameInfo.camera.getPosition() - obj.transform.translation) > worldInfo.renderDistance)
 				continue;
 
 			PushConstantsData push{};

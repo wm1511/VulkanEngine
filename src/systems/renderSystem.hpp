@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\world\WorldInfo.hpp"
 #include "..\wmeCamera.hpp"
 #include "..\wmeDevice.hpp"
 #include "..\wmeFrameInfo.hpp"
@@ -19,7 +20,7 @@ namespace wme
 		RenderSystem(const RenderSystem&) = delete;
 		RenderSystem& operator= (const RenderSystem&) = delete;
 
-		void renderGameObjects(FrameInfo& frameInfo);
+		void renderGameObjects(FrameInfo& frameInfo, mg::WorldInfo& worldInfo);
 	private:
 		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
 		void createPipeline(VkRenderPass renderPass);

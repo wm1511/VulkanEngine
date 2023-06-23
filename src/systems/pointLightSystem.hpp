@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\world\WorldInfo.hpp"
 #include "..\wmeCamera.hpp"
 #include "..\wmeDevice.hpp"
 #include "..\wmeFrameInfo.hpp"
@@ -19,8 +20,9 @@ namespace wme
 		PointLightSystem(const PointLightSystem&) = delete;
 		PointLightSystem& operator= (const PointLightSystem&) = delete;
 
-		void update(FrameInfo& frameInfo, GlobalUbo& ubo);
+		void update(mg::WorldInfo& worldInfo, FrameInfo& frameInfo, GlobalUbo& ubo);
 		void render(FrameInfo& frameInfo);
+
 	private:
 		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
 		void createPipeline(VkRenderPass renderPass);

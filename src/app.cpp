@@ -1,10 +1,10 @@
 #include "app.hpp"
 
+#include "world/Maze.hpp"
 #include "keyboardController.hpp"
 #include "mouseController.hpp"
 #include "wmeCamera.hpp"
 #include "systems/renderSystem.hpp"
-#include "systems/pointLightSystem.hpp"
 #include "wmeBuffer.hpp"
 
 #define GLM_FORCE_RADIANS
@@ -25,7 +25,13 @@ namespace wme
 			.setMaxSets(WmeSwapChain::MAX_FRAMES_IN_FLIGHT)
 			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, WmeSwapChain::MAX_FRAMES_IN_FLIGHT)
 			.build();
-		loadGameObjects();
+		const mg::Maze maze(worldInfo, gameObjects);
+		std::shared_ptr<wme::WmeModel> quadModel = wme::WmeModel::createModelFromFile(wmeDevice, "models/quad.obj");
+		std::shared_ptr<wme::WmeModel> cubeModel = wme::WmeModel::createModelFromFile(wmeDevice, "models/cube.obj");
+		//maze.quadsFromGen(quadModel);
+		maze.cubesFromGen(cubeModel);
+		//maze.cubesFrom1to2(cubeModel);
+		//maze.cubesFrom1to3(cubeModel);
 	}
 
 	App::~App() {}
@@ -64,6 +70,7 @@ namespace wme
         WmeCamera camera{};
     
         auto viewerObject = WmeGameObject::createGameObject();
+
         KeyboardMovementController cameraKeyboardController{};
 		MouseRotationController cameraMouseController{};
 
@@ -107,63 +114,18 @@ namespace wme
 				ubo.projection = camera.getProjection();
 				ubo.view = camera.getView();
 				ubo.inverseView = camera.getInverseView();
-				pointLightSystem.update(frameInfo, ubo);
+				pointLightSystem.update(worldInfo, frameInfo, ubo);
+
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
 
 				wmeRenderer.beginSwapChainRenderPass(commandBuffer);
-				renderSystem.renderGameObjects(frameInfo);
+				renderSystem.renderGameObjects(frameInfo, worldInfo);
 				pointLightSystem.render(frameInfo);
 				wmeRenderer.endSwapChainRenderPass(commandBuffer);
 				wmeRenderer.endFrame();
 			}
 		}
 		vkDeviceWaitIdle(wmeDevice.device());
-	}
-
-	void App::loadGameObjects()
-	{
-		std::shared_ptr<WmeModel> wmeModel = WmeModel::createModelFromFile(wmeDevice, "models/smooth_vase.obj");
-        auto vase = WmeGameObject::createGameObject();
-        vase.model = wmeModel;
-        vase.transform.translation = { .0f, .5f, 1.f };
-        vase.transform.scale = { 1.0f, 1.0f, 1.0f };
-		vase.transform.rotation = { .0f, .0f, .0f};
-        gameObjects.emplace(vase.getId(), std::move(vase));
-		
-		wmeModel = WmeModel::createModelFromFile(wmeDevice, "models/quad.obj");
-        auto floor = WmeGameObject::createGameObject();
-		floor.model = wmeModel;
-		floor.transform.translation = { .0f, .5f, .0f };
-		floor.transform.scale = { 5.0f, 1.0f, 5.0f };
-		floor.transform.rotation = { .0f, .0f, .0f};
-        gameObjects.emplace(floor.getId(), std::move(floor));
-		
-		std::vector<glm::vec3> lightColors
-		{
-			{1.f, .1f, .1f},
-			{.1f, .1f, 1.f},
-			{.1f, 1.f, .1f},
-			{1.f, 1.f, .1f},
-			{.1f, 1.f, 1.f},
-			{1.f, 1.f, 1.f}
-		};
-
-		for (int i = 0; i < lightColors.size(); i++)
-		{
-			auto pointLight = WmeGameObject::makePointLight(0.5f);
-			pointLight.color = lightColors[i];
-			auto rotateLight = glm::rotate(glm::mat4(1.0f), (i * glm::two_pi<float>()) / lightColors.size(), { 0.f, -1.f, 0.f });
-			pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -2.2f, -1.f, 1.f));
-			gameObjects.emplace(pointLight.getId(), std::move(pointLight));
-		}
-
-		/*wmeModel = WmeModel::createModelFromFile(wmeDevice, "models/R8.obj");
-		auto car = WmeGameObject::createGameObject();
-		car.model = wmeModel;
-		car.transform.translation = { .0f, .5f, .0f };
-		car.transform.scale = { 1.0f, 1.0f, 1.0f };
-		car.transform.rotation = { .0f, .0f, glm::pi<float>() };
-		gameObjects.emplace(car.getId(), std::move(car));*/
 	}
 }

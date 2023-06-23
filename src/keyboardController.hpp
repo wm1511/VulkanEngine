@@ -10,10 +10,10 @@ namespace wme
 	public:
 		struct KeyMappings
 		{
-            int moveLeft = GLFW_KEY_A;
-            int moveRight = GLFW_KEY_D;
-            int moveForward = GLFW_KEY_W;
-            int moveBackward = GLFW_KEY_S;
+            int moveLeft = GLFW_KEY_LEFT;
+            int moveRight = GLFW_KEY_RIGHT;
+            int moveForward = GLFW_KEY_UP;
+            int moveBackward = GLFW_KEY_DOWN;
             int moveUp = GLFW_KEY_E;
             int moveDown = GLFW_KEY_Q;
             int releaseCursor = GLFW_KEY_ESCAPE;
